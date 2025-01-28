@@ -23,11 +23,13 @@ git clone <repository-url>
 cd <repository-directory>
 
 **2.Install Dependencies**
+
 Install the required Python libraries using pip:
 
 pip install .r requirements.txt
 
 **3.Configure API Keys**
+
 This project requires the following keys:
 
 *   **Groq API Key:** For generating strategic redcommendations.
@@ -36,18 +38,22 @@ This project requires the following keys:
 **Steps:**
 
 1.  **Groq API Key:**
+   
 *   sign up for a Groq account at https://groq.com.
 *   Obtain your API Key from the Groq dashboard.
 *   Use the API Key in the app.py file.
 
 2.   **Slack Webhook Integration:**
+   
 *   Go to the Slack API.
 *   Create a new app and enable incoming webhooks.
 *   Add a webhook to a channel and copy the generated URL.
 *   Add this to URL to the app.py file.
 
 **4.Run the Application**
+
 Run the Streamlit app:
+
 streamlit run app.py
 
 # **Project Files**
