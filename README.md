@@ -18,8 +18,8 @@ This project focuses on creating a real-time competitive intelligence tool for e
 # **Setup Instructions**
 
 **1.Clone the repository**
-git clone <repository-url>
 
+git clone <repository-url>
 cd <repository-directory>
 
 **2.Install Dependencies**
