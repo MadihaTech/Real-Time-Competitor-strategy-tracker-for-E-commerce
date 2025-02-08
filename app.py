@@ -176,7 +176,7 @@ if not product_reviews.empty:
     else:
         print("Error: 'review_statements' column is missing! Check if the correct CSV file is loaded.")
 
-    reviews = product_reviews["reviews"].tolist()
+    reviews = product_reviews["review_statements"].tolist()
     sentiments = analyze_sentiment(reviews)
 
     st.subheader("Customer Sentiment Analysis")
