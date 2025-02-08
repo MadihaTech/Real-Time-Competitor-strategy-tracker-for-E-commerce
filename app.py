@@ -7,7 +7,7 @@ Original file is located at
     https://colab.research.google.com/drive/1sj3HNpaVDW7MPfj2IAbZ0cScRlkOcMdh
 """
 
-!pip install streamlit
+pip install streamlit
 
 import json
 from datetime import datetime
