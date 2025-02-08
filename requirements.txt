@@ -6,4 +6,4 @@ plotly
 requests
 scikit-learn
 statsmodels
-
+beautifulsoup
