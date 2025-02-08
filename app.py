@@ -171,10 +171,11 @@ st.table(competitor_data_filtered.tail(5))
 # Perform sentiment analysis
 product_reviews = reviews_data[reviews_data["title"] == selected_product]
 if not product_reviews.empty:
-if "reviews" in product_reviews.columns:
-    product_reviews["reviews"] = product_reviews["reviews"].apply(lambda x: truncate_text(str(x), 512))
+if "review_statements" in product_reviews.columns:
+    product_reviews["review_statements"] = product_reviews["review_statements"].apply(lambda x: truncate_text(str(x), 512))
 else:
-    print("Error: 'reviews' column is missing from the DataFrame. Check data loading.")
+    print("Error: 'review_statements' column is missing! Check if the correct CSV file is loaded.")
+
     reviews = product_reviews["reviews"].tolist()
     sentiments = analyze_sentiment(reviews)
 
