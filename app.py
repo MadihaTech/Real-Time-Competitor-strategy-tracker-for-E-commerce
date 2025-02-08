@@ -38,13 +38,14 @@ def load_and_preprocess_data(file_path, drop_na_columns=None):
 def analyze_sentiment(reviews):
     """Perform sentiment analysis on customer reviews."""
 from transformers import pipeline
-
+def analyze_sentiment(reviews):
 try:
     sentiment_pipeline = pipeline("sentiment-analysis", model="nlptown/bert-base-multilingual-uncased-sentiment")
+    return sentiment_pipeline(reviews)  
 except Exception as e:
     print("Error loading sentiment model:", e)
     sentiment_pipeline = None  # Prevents app crash
-    return sentiment_pipeline(reviews)
+    return None
 
 def train_predictive_model(data):
     """Train a predictive model to estimate competitor discount strategies."""
