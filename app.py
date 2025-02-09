@@ -9,6 +9,9 @@ Original file is located at
 import streamlit as st  # Import Streamlit
 import openai  # Import OpenAI library
 
+st.set_page_config(page_title="E-Commerce Competitor Strategy Dashboard", layout="wide")
+
+
 # ✅ Retrieve API key from Streamlit Secrets
 API_KEY = st.secrets["api_keys"]["OPENAI_API_KEY"]
 
@@ -188,7 +191,6 @@ Provide your recommendations in the following format:
         return "Error: Unable to generate recommendations. Please check the API key and response."
 
 # Streamlit UI Configuration
-st.set_page_config(page_title="E-Commerce Competitor Strategy Dashboard", layout="wide")
 st.title("E-Commerce Competitor Dashboard")
 st.sidebar.header("Select a Product")
 
