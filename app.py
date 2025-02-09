@@ -15,6 +15,31 @@ API_KEY = st.secrets["api_keys"]["OPENAI_API_KEY"]
 # ✅ Set API key for OpenAI
 openai.api_key = API_KEY
 
+# ✅ Function to generate responses using OpenAI API
+def generate_response(user_input):
+    try:
+        response = openai.ChatCompletion.create(
+            model="gpt-4",
+            messages=[{"role": "user", "content": user_input}]
+        )
+        return response["choices"][0]["message"]["content"]
+    except Exception as e:
+        st.error(f"Error calling OpenAI API: {e}")
+        return "Sorry, there was an error."
+
+# ✅ Streamlit User Interface
+st.title("Competitor Strategy Tracker")  # App Title
+
+# ✅ Input box for user query
+user_query = st.text_input("Enter your query:")
+
+# ✅ Button to trigger AI response
+if st.button("Get Insights"):
+    if user_query:  # Ensure input is not empty
+        result = generate_response(user_query)  # Call OpenAI function
+        st.write(result)  # Display result
+    else:
+        st.warning("Please enter a query first!")  # Show warning if input is empty
 
 import json
 from datetime import datetime
