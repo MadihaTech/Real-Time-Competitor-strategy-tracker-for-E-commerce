@@ -386,12 +386,11 @@ if selected_product:
     if not product_reviews.empty and "review_statements" in product_reviews.columns:
         product_reviews["review_statements"] = product_reviews["review_statements"].astype(str).apply(lambda x: truncate_text(x, 512))
     else:
-   # ✅ Ensure the 'review_statements' column exists before accessing it
-if "review_statements" not in reviews_data.columns:
-    st.error("⚠️ Column 'review_statements' missing from reviews.csv! Check data format.")
-    reviews = []  # Prevent error by assigning an empty list
-else:
-    product_reviews = reviews_data[reviews_data["title"] == selected_product]
+       if "review_statements" not in reviews_data.columns:
+          st.error("⚠️ Column 'review_statements' missing from reviews.csv! Check data format.")
+          reviews = []  # Prevent error by assigning an empty list
+       else:
+          product_reviews = reviews_data[reviews_data["title"] == selected_product]
     
     # ✅ Ensure product_reviews is not empty before extracting reviews
     if not product_reviews.empty:
