@@ -307,6 +307,10 @@ if not API_KEY:
     st.error("⚠️ Groq API Key Not Found! Please check Streamlit secrets.")
     st.stop()  # Stops execution if API key is missing
 
+# Initialize 'competitor_data_filtered' in session state if not already present
+if 'competitor_data_filtered' not in st.session_state:
+    st.session_state.competitor_data_filtered = None
+
 # ✅ Debugging: Check if competitor data & sentiments are valid
 if competitor_data_filtered.empty or sentiments is None:
     st.error("⚠️ Missing competitor data or sentiment analysis. Unable to generate recommendations.")
