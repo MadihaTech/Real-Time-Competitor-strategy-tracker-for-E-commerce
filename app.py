@@ -179,39 +179,62 @@ def send_to_slack(data):
         headers={"Content-Type": "application/json"},
     )
 
-def generate_strategy_recommendation(title, competitor_data, sentiment):
-    """Generate strategic recommendations using OpenAI API (compatible with openai>=1.0.0)."""
-    date = datetime.now()
+def generate_strategy_recommendation(api_key, competitor_data, sentiment_output):
+    if competitor_data.empty or sentiment_output is None:
+        return "Error: Missing competitor data or sentiment analysis."
+    
     prompt = f"""
     You are an expert in e-commerce competitor analysis. Based on the details below, provide strategic recommendations.
 
-    **Product Name:** {title}
-    **Competitor Data:** {competitor_data}
-    **Sentiment Analysis:** {sentiment}
-    **Today's Date:** {date}
+    **Competitor Data:**  
+    {competitor_data}
 
-    ### Task:
+    **Sentiment Analysis:**  
+    {sentiment_output}
+
+    **Task:**  
     - Identify key pricing trends.
     - Suggest optimal pricing and promotional strategies.
     - Recommend customer engagement improvements.
 
-    Provide recommendations in the format:
+    Provide recommendations in:
     1. **Pricing Strategy**
     2. **Promotional Campaign Ideas**
-    3. **Customer Satisfaction Recommendations**
+    3. **Customer Satisfaction Improvements**
     """
 
-    # ✅ Updated OpenAI client for `openai>=1.0.0`
-    client = openai.OpenAI(api_key=st.secrets["api_keys"]["OPENAI_API_KEY"])
+    url = "https://api.groq.com/openai/v1/chat/completions"
+    headers = {
+        "Authorization": f"Bearer {api_key}",
+        "Content-Type": "application/json"
+    }
+    data = {
+        "model": "llama3-8b-8192",  # Use the correct Groq model
+        "messages": [{"role": "user", "content": prompt}],
+        "temperature": 0.7
+    }
 
     try:
-        response = client.chat.completions.create(
-            model="gpt-3.5-turbo",
-            messages=[{"role": "user", "content": prompt}]
-        )
-        return response.choices[0].message.content
-    except Exception as e:
-        return f"Error: Unable to generate recommendations. {str(e)}"
+        response = requests.post(url, headers=headers, data=json.dumps(data))
+        response_json = response.json()
+        if "choices" in response_json and response_json["choices"]:
+            return response_json["choices"][0]["message"]["content"]
+        else:
+            return f"Error: Groq API response was empty. Response: {response_json}"
+    except requests.exceptions.RequestException as e:
+        return f"Error: Request to Groq API failed: {e}"
+
+# Ensure API Key is available before proceeding
+try:
+    API_KEY = st.secrets["api_keys"]["GROQ_API_KEY"]
+    recommendations = generate_strategy_recommendation(API_KEY, competitor_data_filtered, sentiments)
+    st.write("Strategic Recommendations")
+    st.write(recommendations)
+except KeyError:
+    st.error("⚠️ Groq API Key Not Found! Please check Streamlit secrets.")
+    st.stop()
+
+   
 
 # Streamlit UI Configuration
 st.title("E-Commerce Competitor Dashboard")
@@ -334,53 +357,71 @@ if not competitor_df.empty and 'Date' in competitor_df.columns and 'Predicted_Di
 else:
     st.write("Competitor DataFrame is empty or missing required columns.")
 
-# Function to generate strategic recommendations using OpenAI API
+
 def get_strategic_recommendations(api_key, competitor_data, sentiment_output):
+    """Generate strategic recommendations using the Groq API."""
     if competitor_data.empty or sentiment_output is None:
         return "Error: Missing competitor data or sentiment analysis."
+
+    # ✅ Define the prompt **outside** the if-block
+    prompt = f"""
+    You are an expert in e-commerce competitor analysis. Based on the details below, provide strategic recommendations.
+
+    **Competitor Data:**  
+    {competitor_data}
+
+    **Sentiment Analysis:**  
+    {sentiment_output}
+
+    **Task:**  
+    - Identify key pricing trends.
+    - Suggest optimal pricing and promotional strategies.
+    - Recommend customer engagement improvements.
+
+    Provide the recommendations in:
+    1. **Pricing Strategy**
+    2. **Promotional Campaign Ideas**
+    3. **Customer Satisfaction Improvements**
+    """
+
+    # ✅ Ensure proper indentation for API request
+    url = "https://api.groq.com/openai/v1/chat/completions"
+    headers = {
+        "Authorization": f"Bearer {api_key}",
+        "Content-Type": "application/json"
+    }
+    data = {
+        "model": "llama3-8b-8192",  # ✅ Use Groq-supported model
+        "messages": [{"role": "user", "content": prompt}],
+        "temperature": 0.7
+    }
+
     try:
-        openai.api_key = api_key  # Set the API key for authentication
- 
-        prompt = f"""
-        You are an expert in e-commerce competitor analysis. Based on the details below, provide strategic recommendations.
-
-        **Competitor Data:**  
-        {competitor_data}
-
-        **Sentiment Analysis:**  
-        {sentiment_output}
-
-        **Task:**  
-        - Identify key pricing trends.
-        - Suggest optimal pricing and promotional strategies.
-        - Recommend customer engagement improvements.
-
-        Provide the recommendations in:
-        1. **Pricing Strategy**
-        2. **Promotional Campaign Ideas**
-        3. **Customer Satisfaction Improvements**
-        """
-
-        response = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo", 
-            messages=[{"role": "user", "content": prompt}]
-        )
-        return response["choices"][0]["message"]["content"]
+        response = requests.post(url, headers=headers, data=json.dumps(data))
+        response_json = response.json()
+        
+        if "choices" in response_json and response_json["choices"]:
+            return response_json["choices"][0]["message"]["content"]
+        else:
+            return f"Error: Groq API response was empty. Response: {response_json}"
     
-    except Exception as e:
-        return f"Error: Unable to generate recommendations. {str(e)}"
+    except requests.exceptions.RequestException as e:
+        return f"Error: Request to Groq API failed: {e}"
 
-# Ensure API Key is available before proceeding
+# ✅ Ensure API Key is available before proceeding
 try:
-    api_key = st.secrets["api_keys"]["OPENAI_API_KEY"]  # ✅ Correct Key Access
+    API_KEY = st.secrets["api_keys"]["GROQ_API_KEY"]  # ✅ Use Groq API Key
     
-    # Pass actual data to generate recommendations
-    recommendations = get_strategic_recommendations(api_key, competitor_data_filtered, sentiments)
+    if not API_KEY:
+        raise KeyError("GROQ_API_KEY is missing")
 
-    st.write("Strategic Recommendations")
+    recommendations = get_strategic_recommendations(API_KEY, competitor_data_filtered, sentiments)
+    
+    st.subheader("Strategic Recommendations")
     st.write(recommendations)
+
 except KeyError:
-    st.error("⚠ API Key Not Found! Please check Streamlit secrets.")
+    st.error("⚠️ Groq API Key Not Found! Please check Streamlit secrets.")
     st.stop()
 
 # Streamlit code to render the app
