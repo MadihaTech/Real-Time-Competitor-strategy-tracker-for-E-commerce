@@ -367,7 +367,7 @@ def get_strategic_recommendations(api_key, competitor_data, sentiment_output):
     try:
         openai.api_key = api_key  # Set the API key for authentication
  # Ensure valid data before making an API request
- if competitor_data.empty or sentiment_output is None:
+    if competitor_data.empty or sentiment_output is None:
         return "Error: Missing competitor data or sentiment analysis."
         # Dynamically generate the prompt based on actual data
         prompt = f"""
