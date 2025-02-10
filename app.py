@@ -268,6 +268,13 @@ else:
 
 # Filter data for selected product
 competitor_data_filtered = competitor_data[competitor_data["title"] == selected_product]
+
+# Debugging: Ensure data is loaded
+st.write("Debug: Competitor Data Before Forecasting", competitor_data_filtered)
+if competitor_data_filtered.empty:
+    st.error("Competitor data is empty! Please check data loading.")
+
+st.write("Competitor CSV Preview:", competitor_data.head())  # Debug competitor data
 reviews_data = load_and_preprocess_data("reviews.csv")
 
 # Display competitor analysis
@@ -284,7 +291,18 @@ if not product_reviews.empty:
         print("Error: 'review_statements' column is missing! Check if the correct CSV file is loaded.")
 
     reviews = product_reviews["review_statements"].tolist()
+# Debugging: Ensure reviews are loading
+if "review_statements" not in reviews_data.columns:
+    st.error("Column 'review_statements' missing from reviews.csv! Check data format.")
+
+st.write("Debug: Extracted Reviews for Sentiment Analysis", reviews)
+
+# Perform Sentiment Analysis
+if reviews:
     sentiments = analyze_sentiment(reviews)
+else:
+    sentiments = None
+    st.error("No reviews found for sentiment analysis.")
 
 # Load customer reviews data
 reviews_path = 'reviews.csv'
@@ -346,7 +364,9 @@ else:
 def get_strategic_recommendations(api_key, competitor_data, sentiment_output):
     try:
         openai.api_key = api_key  # Set the API key for authentication
-        
+ # Ensure valid data before making an API request
+ if competitor_data.empty or sentiment_output is None:
+        return "Error: Missing competitor data or sentiment analysis."
         # Dynamically generate the prompt based on actual data
         prompt = f"""
         You are an expert in e-commerce competitor analysis. Based on the details below, provide strategic recommendations.
