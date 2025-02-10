@@ -17,6 +17,12 @@ from sklearn.ensemble import RandomForestRegressor
 from sklearn.model_selection import train_test_split
 from statsmodels.tsa.arima.model import ARIMA
 from transformers import pipeline
+import nltk
+from nltk.sentiment import SentimentIntensityAnalyzer
+
+# ✅ Download the VADER lexicon (needed for sentiment analysis)
+nltk.download('vader_lexicon')
+
 
 st.set_page_config(page_title="E-Commerce Competitor Strategy Dashboard", layout="wide")
 
@@ -29,7 +35,7 @@ else:
     st.error("⚠ Groq API Key not found! Please check Streamlit secrets configuration.")
     st.stop()  # Stop execution if API key is missing
 
-# ✅ Function to generate response using OpenAI API
+# ✅ Function to generate response using Groq API
 def generate_response(user_input):
     if not API_KEY:
         st.error("⚠ Groq API Key is missing! Please check Streamlit secrets.")
@@ -99,11 +105,6 @@ def load_and_preprocess_data(file_path, drop_na_columns=None):
         data = data.dropna(subset=drop_na_columns)  # Drop rows with missing values in specified columns
     return data
 
-from nltk.sentiment.vader import SentimentIntensityAnalyzer
-import nltk
-
-# ✅ Download necessary data for Vader (Only required once)
-nltk.download('vader_lexicon')
 
 def analyze_sentiment(reviews):
     """Perform sentiment analysis using Vader."""
