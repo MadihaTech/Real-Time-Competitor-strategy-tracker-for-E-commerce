@@ -343,18 +343,25 @@ else:
 # Forecast discounts using ARIMA
 competitor_data_filtered["date"] = pd.to_datetime(competitor_data_filtered["date"], errors="coerce")
 competitor_data_filtered.set_index("date", inplace=True)
-competitor_data_with_predictions = forecast_discounts_arima(competitor_data_filtered)
+
+# ✅ Handle ARIMA errors gracefully
+try:
+    competitor_data_with_predictions = forecast_discounts_arima(competitor_data_filtered)
+    st.write("Debug: ARIMA Predictions", competitor_data_with_predictions)
+except Exception as e:
+    st.error(f"Error in ARIMA Forecasting: {str(e)}")
+    competitor_data_with_predictions = pd.DataFrame()  # Prevent crash
 
 st.subheader("Competitor Current and Predicted Discounts")
 st.table(competitor_data_with_predictions.tail(10))
 
+# ✅ Handle empty sentiment values before using them
+sentiment_output = sentiments if not product_reviews.empty else "No sentiment data available"
+
 # Debugging: Print values before passing to the function
 st.write("Debug: Selected Product", selected_product)
 st.write("Debug: Competitor Data", competitor_data_with_predictions)
-st.write("Debug: Sentiment Output", sentiment_output)
-
-# Handle empty values gracefully
-sentiment_output = sentiments if not product_reviews.empty else "No sentiment data available"
+st.write("Debug: Sentiment Output", sentiment_output)  # Now defined before printing
 
 # Generate Strategic Recommendations
 try:
@@ -379,4 +386,3 @@ if recommendations and "Error" not in recommendations:
         st.success("Recommendations sent to Slack successfully!")
     except Exception as e:
         st.error(f"Failed to send to Slack: {str(e)}")
-
