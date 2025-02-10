@@ -296,18 +296,14 @@ def get_strategic_recommendations(api_key):
     else:
         return "Error: Unable to generate recommendations. Please check the API key and response."
 
-# Example usage
-api_key = st.secrets["API_KEY"]  # Use the API key from Streamlit secrets
-recommendations = get_strategic_recommendations(api_key)
-st.write("Strategic Recommendations")
-st.write(recommendations)
-
-
-
-
-
-
-
+try:
+    api_key = st.secrets["api_keys"]["OPENAI_API_KEY"]  # ✅ Correct Key Access
+    recommendations = get_strategic_recommendations(api_key)
+    st.write("Strategic Recommendations")
+    st.write(recommendations)
+except KeyError:
+    st.error("⚠ API Key Not Found! Please check Streamlit secrets.")
+    st.stop()
 
 # Streamlit code to render the app
 st.subheader("Customer Sentiment Analysis")
