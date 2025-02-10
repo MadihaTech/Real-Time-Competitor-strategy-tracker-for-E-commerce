@@ -226,21 +226,28 @@ print(sentiment_df.columns)
 
 # Check for missing values in the dataframe
 print(sentiment_df.isnull().sum())
+# Updated Plotting Code
 import plotly.express as px
 
-# Updated Plotting Code
+# Check if the dataframe is not empty and has the required columns
 if not sentiment_df.empty and 'label' in sentiment_df.columns and 'count' in sentiment_df.columns:
     fig = px.bar(sentiment_df, x="label", y="count", title="Sentiment Analysis Results")
     fig.show()
 else:
     print("DataFrame is empty or missing required columns.")
+    st.write("No reviews available for this product.")
 
-    st.subheader("Customer Sentiment Analysis")
-    sentiment_df = pd.DataFrame(sentiments)
+# Streamlit code to render the app
+st.subheader("Customer Sentiment Analysis")
+sentiment_df = pd.DataFrame(sentiments)
+
+# Check if the dataframe is not empty and has the required columns for Streamlit display
+if not sentiment_df.empty and 'label' in sentiment_df.columns and 'count' in sentiment_df.columns:
     fig = px.bar(sentiment_df, x="label", y="count", title="Sentiment Analysis Results")
     st.plotly_chart(fig)
 else:
     st.write("No reviews available for this product.")
+
 
 # Forecast discounts using ARIMA
 competitor_data_filtered["date"] = pd.to_datetime(competitor_data_filtered["date"], errors="coerce")
