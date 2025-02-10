@@ -217,17 +217,17 @@ if not product_reviews.empty:
 
     reviews = product_reviews["review_statements"].tolist()
     sentiments = analyze_sentiment(reviews)
-# Data Validation Checks (Insert at line 220)
-# Check the first few rows of the dataframe to verify the data
-print(sentiment_df.head())
-
-# Check the columns to verify the structure
-print(sentiment_df.columns)
-
-# Check for missing values in the dataframe
-print(sentiment_df.isnull().sum())
-# Updated Plotting Code
+import pandas as pd
 import plotly.express as px
+import streamlit as st
+
+# Load your data (update the path to your actual data source)
+sentiment_df = pd.read_csv('path_to_your_data.csv')
+
+# Data Validation Checks
+print(sentiment_df.head())      # Check the first few rows of the dataframe
+print(sentiment_df.columns)     # Check the columns of the dataframe
+print(sentiment_df.isnull().sum())  # Check for missing values in the dataframe
 
 # Check if the dataframe is not empty and has the required columns
 if not sentiment_df.empty and 'label' in sentiment_df.columns and 'count' in sentiment_df.columns:
@@ -235,6 +235,17 @@ if not sentiment_df.empty and 'label' in sentiment_df.columns and 'count' in sen
     fig.show()
 else:
     print("DataFrame is empty or missing required columns.")
+    st.write("No reviews available for this product.")
+
+# Streamlit code to render the app
+st.subheader("Customer Sentiment Analysis")
+sentiment_df = pd.DataFrame(sentiments)
+
+# Check if the dataframe is not empty and has the required columns for Streamlit display
+if not sentiment_df.empty and 'label' in sentiment_df.columns and 'count' in sentiment_df.columns:
+    fig = px.bar(sentiment_df, x="label", y="count", title="Sentiment Analysis Results")
+    st.plotly_chart(fig)
+else:
     st.write("No reviews available for this product.")
 
 # Streamlit code to render the app
