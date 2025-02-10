@@ -312,17 +312,21 @@ if 'competitor_data_filtered' not in st.session_state:
     st.session_state.competitor_data_filtered = None
 
 # ✅ Debugging: Check if competitor data & sentiments are valid
-if competitor_data_filtered.empty or sentiments is None:
-    st.error("⚠️ Missing competitor data or sentiment analysis. Unable to generate recommendations.")
+if st.session_state.competitor_data_filtered is None or st.session_state.competitor_data_filtered.empty:
+    st.error("⚠️ Missing competitor data. Unable to generate recommendations.")
 else:
     try:
-        recommendations = generate_strategy_recommendation(API_KEY, competitor_data_filtered, sentiments)
-
-        if "Error" in recommendations:
-            st.error(f"⚠️ {recommendations}")  # Display API error messages properly
+        # Assuming 'sentiments' is defined elsewhere in your code
+        if sentiments is None:
+            st.error("⚠️ Missing sentiment analysis. Unable to generate recommendations.")
         else:
-            st.subheader("Strategic Recommendations")
-            st.write(recommendations)
+            recommendations = generate_strategy_recommendation(API_KEY, st.session_state.competitor_data_filtered, sentiments)
+
+            if "Error" in recommendations:
+                st.error(f"⚠️ {recommendations}")  # Display API error messages properly
+            else:
+                st.subheader("Strategic Recommendations")
+                st.write(recommendations)
 
     except NameError:
         st.error("⚠️ Function `generate_strategy_recommendation` is not defined. Please check your code.")
