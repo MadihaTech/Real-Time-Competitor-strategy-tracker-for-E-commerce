@@ -180,7 +180,7 @@ def send_to_slack(data):
     )
 
 def generate_strategy_recommendation(title, competitor_data, sentiment):
-    """Generate strategic recommendations using OpenAI API."""
+    """Generate strategic recommendations using OpenAI API (compatible with openai>=1.0.0)."""
     date = datetime.now()
     prompt = f"""
     You are an expert in e-commerce competitor analysis. Based on the details below, provide strategic recommendations.
@@ -200,13 +200,18 @@ def generate_strategy_recommendation(title, competitor_data, sentiment):
     2. **Promotional Campaign Ideas**
     3. **Customer Satisfaction Recommendations**
     """
-    
-    response = openai.ChatCompletion.create(
-        model="gpt-4",
-        messages=[{"role": "user", "content": prompt}]
-    )
-    
-    return response["choices"][0]["message"]["content"]
+
+    # ✅ Updated OpenAI client for `openai>=1.0.0`
+    client = openai.OpenAI(api_key=st.secrets["api_keys"]["OPENAI_API_KEY"])
+
+    try:
+        response = client.chat.completions.create(
+            model="gpt-4",
+            messages=[{"role": "user", "content": prompt}]
+        )
+        return response.choices[0].message.content
+    except Exception as e:
+        return f"Error: Unable to generate recommendations. {str(e)}"
 
 # Streamlit UI Configuration
 st.title("E-Commerce Competitor Dashboard")
