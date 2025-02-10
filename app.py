@@ -206,7 +206,7 @@ def generate_strategy_recommendation(title, competitor_data, sentiment):
 
     try:
         response = client.chat.completions.create(
-            model="gpt-4",
+            model="gpt-3.5-turbo",
             messages=[{"role": "user", "content": prompt}]
         )
         return response.choices[0].message.content
@@ -362,7 +362,7 @@ def get_strategic_recommendations(api_key, competitor_data, sentiment_output):
         """
 
         response = openai.ChatCompletion.create(
-            model="gpt-4",  # Use GPT-4 model
+            model="gpt-3.5-turbo", 
             messages=[{"role": "user", "content": prompt}]
         )
         return response["choices"][0]["message"]["content"]
