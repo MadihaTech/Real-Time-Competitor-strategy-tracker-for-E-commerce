@@ -179,6 +179,34 @@ def send_to_slack(data):
         headers={"Content-Type": "application/json"},
     )
 
+def generate_strategy_recommendation(title, competitor_data, sentiment):
+    """Generate strategic recommendations using OpenAI API."""
+    date = datetime.now()
+    prompt = f"""
+    You are an expert in e-commerce competitor analysis. Based on the details below, provide strategic recommendations.
+
+    **Product Name:** {title}
+    **Competitor Data:** {competitor_data}
+    **Sentiment Analysis:** {sentiment}
+    **Today's Date:** {date}
+
+    ### Task:
+    - Identify key pricing trends.
+    - Suggest optimal pricing and promotional strategies.
+    - Recommend customer engagement improvements.
+
+    Provide recommendations in the format:
+    1. **Pricing Strategy**
+    2. **Promotional Campaign Ideas**
+    3. **Customer Satisfaction Recommendations**
+    """
+    
+    response = openai.ChatCompletion.create(
+        model="gpt-4",
+        messages=[{"role": "user", "content": prompt}]
+    )
+    
+    return response["choices"][0]["message"]["content"]
 
 # Streamlit UI Configuration
 st.title("E-Commerce Competitor Dashboard")
