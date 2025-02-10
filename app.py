@@ -11,21 +11,30 @@ import openai
 
 st.set_page_config(page_title="E-Commerce Competitor Strategy Dashboard", layout="wide")
 
-# Retrieve API key from Streamlit Secrets
-API_KEY = st.secrets["api_keys"]["OPENAI_API_KEY"]
-openai.api_key = API_KEY  # Set API key for OpenAI
+# ✅ Fetch API Key from Streamlit Secrets
+try:
+    API_KEY = st.secrets["api_keys"]["OPENAI_API_KEY"]  # Correctly accessing the key
+    openai.api_key = API_KEY  # Set OpenAI API key
 
-# Function to generate response using OpenAI API
+    # ✅ Debugging: Confirm API Key is Loaded
+    st.write("API Key Loaded:", bool(API_KEY))  # Should print True if API key is correctly loaded
+
+except KeyError:
+    st.error("⚠️ API Key not found! Please check Streamlit secrets configuration.")
+    st.stop()  # Stop execution if API key is missing
+
+# ✅ Function to generate response using OpenAI API
 def generate_response(user_input):
     try:
         response = openai.ChatCompletion.create(
-            model="gpt-4",  # Or "gpt-3.5-turbo" if you prefer
+            model="gpt-4",  # Or "gpt-3.5-turbo" if needed
             messages=[{"role": "user", "content": user_input}]
         )
         return response["choices"][0]["message"]["content"]
     except Exception as e:
-        st.error(f"⚠️ OpenAI API Error: {e}")  # Print the exact error
+        st.error(f"⚠️ OpenAI API Error: {e}")  # Display exact error
         return f"Error: {str(e)}"
+
 
 # ✅ Streamlit User Interface
 st.title("Competitor Strategy Tracker")  # App Title
