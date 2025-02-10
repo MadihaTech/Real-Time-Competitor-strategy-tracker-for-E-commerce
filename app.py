@@ -23,23 +23,23 @@ from nltk.sentiment import SentimentIntensityAnalyzer
 # ✅ Download the VADER lexicon (needed for sentiment analysis)
 nltk.download('vader_lexicon')
 
-import requests
-import json
-import streamlit as st
-
-
-
-
 st.set_page_config(page_title="E-Commerce Competitor Strategy Dashboard", layout="wide")
 
 # ✅ Safely Fetch API Key
 API_KEY = st.secrets.get("api_keys", {}).get("GROQ_API_KEY", None)
-
 if API_KEY:
     st.write("API Key Loaded: True")  # Debugging confirmation
 else:
     st.error("⚠ Groq API Key not found! Please check Streamlit secrets configuration.")
     st.stop()  # Stop execution if API key is missing
+
+
+# ✅ Fetch Slack Webhook from Streamlit secrets (ensure it's set in your secrets.toml file)
+SLACK_WEBHOOK = st.secrets.get("api_keys", {}).get("SLACK_WEBHOOK", None)
+
+if not SLACK_WEBHOOK:
+    st.error("⚠️ Slack Webhook URL is missing. Please check your configuration.")
+    st.stop()
 
 # ✅ Function to generate response using Groq API
 def generate_response(user_input):
@@ -90,14 +90,37 @@ if st.button("Get Insights"):
         result = generate_response(user_query)  # Call Groq API function
         st.text_area("AI Response", result, height=200)  # Display AI response
 
+# ✅ Function to send data to Slack
+def send_to_slack(data):
+    """Send generated data to a Slack channel with error handling."""
+    if not SLACK_WEBHOOK:
+        st.error("⚠️ Slack Webhook URL is missing. Please check your configuration.")
+        return
 
-# ✅ Constants for API keys and Slack webhook
-API_KEY = st.secrets.get("api_keys", {}).get("GROQ_API_KEY", None)  # ✅ Use Groq API Key
+    payload = {"text": data}
+    
+    try:
+        response = requests.post(
+            SLACK_WEBHOOK,
+            data=json.dumps(payload),
+            headers={"Content-Type": "application/json"},
+            timeout=10
+    )
+        if response.status_code == 200:
+            st.success("✅ Recommendations sent to Slack successfully!")
+        else:
+            st.error(f"⚠️ Slack API Error: {response.status_code} - {response.text}")
+    
+    except requests.exceptions.RequestException as e:
+        st.error(f"⚠️ Network error while sending to Slack: {e}")
 
-if not API_KEY:
-    st.error("⚠ Groq API Key Not Found! Please check Streamlit secrets.")
-    st.stop()
 
+
+
+
+
+
+# ✅ Constants for Slack webhook
 SLACK_WEBHOOK = "https://hooks.slack.com/services/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"  # Slack webhook URL
 
 def truncate_text(text, max_length=512):
@@ -111,8 +134,10 @@ def load_and_preprocess_data(file_path, drop_na_columns=None):
         data = data.dropna(subset=drop_na_columns)  # Drop rows with missing values in specified columns
     return data
 
-
+# ✅ Sentiment Analysis using VADER
 def analyze_sentiment(reviews):
+    if not reviews:  # If reviews is empty, return a message
+        return "No reviews available"
     """Perform sentiment analysis using Vader."""
     analyzer = SentimentIntensityAnalyzer()
     
