@@ -128,7 +128,7 @@ if not API_KEY:
     st.error("⚠ Groq API Key Not Found! Please check Streamlit secrets.")
     st.stop()
 
-SLACK_WEBHOOK = "https://hooks.slack.com/services/your/webhook/url"  # Slack webhook URL
+SLACK_WEBHOOK = "https://hooks.slack.com/services/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"  # Slack webhook URL
 
 def truncate_text(text, max_length=512):
     """Truncate text to a specified maximum length."""
