@@ -179,67 +179,6 @@ def send_to_slack(data):
         headers={"Content-Type": "application/json"},
     )
 
-def generate_strategy_recommendation(title, competitor_data, sentiment):
-    """Generate strategic recommendations using an AI model."""
-    date = datetime.now()
-    prompt = f"""
-    You are a highly skilled business strategist specializing in e-commerce. Based on the following details, suggest:
-
-1. **Product Name**: {title}
-
-2. **Competitor Data**:
-{competitor_data}
-
-3. **Sentiment Analysis**:
-{sentiment}
-
-4. **Today's Date**: {str(date)}
-
-### Task:
-- Analyze competitor data and identify key pricing trends.
-- Leverage sentiment analysis insights to highlight areas where customer satisfaction can be improved.
-- Use discount predictions to suggest pricing strategies for the next 5 days.
-- Recommend promotional campaigns and marketing strategies aligned with customer sentiments.
-
-Provide your recommendations in the following format:
-1. **Pricing Strategy**
-2. **Promotional Campaign Ideas**
-3. **Customer Satisfaction Recommendations**
-    """
-
-    data = {
-        "messages": [{"role": "user", "content": prompt}],
-        "model": "llama3-8b-8192",
-        "temperature": 0,
-    }
-
-try:
-    API_KEY = st.secrets["api_keys"]["OPENAI_API_KEY"]  # Ensure API key is securely loaded
-except KeyError:
-    st.error("⚠️ OpenAI API Key is missing in Streamlit secrets.")
-    API_KEY = None  # Prevents crash
-
-if not API_KEY:
-    return "Error: OpenAI API Key is missing. Please update your Streamlit secrets."
-
-    res = requests.post(
-    "https://api.openai.com/v1/chat/completions",  # ✅ Corrected endpoint
-    data=json.dumps(data),
-    headers=headers,
-    )
- try:
-    res = res.json()
-    if "choices" in res and res["choices"]:
-         return res["choices"][0]["message"]["content"]
-    else:
-         return "Error: Unable to generate recommendations. Please check the API key and response."
- except requests.exceptions.RequestException as e:
-    return f"Error: Request to OpenAI API failed: {e}"
- except json.JSONDecodeError:
-    return "Error: Failed to decode OpenAI API response. It may not be in JSON format."
- except Exception as e:
-    return f"Error processing API response: {str(e)}"
-
 
 # Streamlit UI Configuration
 st.title("E-Commerce Competitor Dashboard")
