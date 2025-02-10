@@ -217,6 +217,7 @@ if not product_reviews.empty:
 
     reviews = product_reviews["review_statements"].tolist()
     sentiments = analyze_sentiment(reviews)
+
 import pandas as pd
 import plotly.express as px
 import streamlit as st
@@ -226,6 +227,8 @@ reviews_path = 'reviews.csv'
 try:
     sentiment_df = pd.read_csv(reviews_path)
     st.write(f"Successfully loaded {reviews_path}")
+    if sentiment_df.empty or 'label' not in sentiment_df.columns or 'count' not in sentiment_df.columns:
+        st.write("Reviews DataFrame is empty or missing required columns.")
 except FileNotFoundError:
     st.write(f"Error: {reviews_path} file not found. Please check the file path.")
     sentiment_df = pd.DataFrame()
@@ -235,6 +238,8 @@ competitor_path = 'competitor_data.csv'
 try:
     competitor_df = pd.read_csv(competitor_path)
     st.write(f"Successfully loaded {competitor_path}")
+    if competitor_df.empty or 'Date' not in competitor_df.columns or 'Predicted_Discount' not in competitor_df.columns:
+        st.write("Competitor DataFrame is empty or missing required columns.")
 except FileNotFoundError:
     st.write(f"Error: {competitor_path} file not found. Please check the file path.")
     competitor_df = pd.DataFrame()
@@ -272,6 +277,25 @@ if not competitor_df.empty and 'Date' in competitor_df.columns and 'Predicted_Di
     st.plotly_chart(fig2)
 else:
     st.write("Competitor DataFrame is empty or missing required columns.")
+
+# Placeholder function for generating strategic recommendations
+def get_strategic_recommendations(api_key):
+    if api_key:
+        # Mock API response for strategic recommendations
+        recommendations = "Here are some strategic recommendations based on the competitor data."
+        return recommendations
+    else:
+        return "Error: Unable to generate recommendations. Please check the API key and response."
+
+# Example usage
+api_key = st.secrets["API_KEY"]  # Use the API key from Streamlit secrets
+recommendations = get_strategic_recommendations(api_key)
+st.write("Strategic Recommendations")
+st.write(recommendations)
+
+
+
+
 
 
 
