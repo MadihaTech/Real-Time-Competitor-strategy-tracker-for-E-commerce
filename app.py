@@ -46,7 +46,7 @@ def generate_response(user_input):
         "temperature": 0.7
     }
 
- try:
+    try:
         # ✅ Send API request
         response = requests.post(url, headers=headers, data=json.dumps(data))
         response_json = response.json()
