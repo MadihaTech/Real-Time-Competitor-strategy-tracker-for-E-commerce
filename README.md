@@ -75,3 +75,7 @@ streamlit run app.py
 # **License**
 
 This project is licensed by MIT License.
+## Streamlit App
+
+[![View App](https://img.shields.io/badge/View%20App-Streamlit-brightgreen)](https://real-time-competitor-strategy-tracker-for-e-commerce-5skseqmkl.streamlit.app/)
+
