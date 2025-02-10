@@ -23,27 +23,42 @@ from nltk.sentiment import SentimentIntensityAnalyzer
 # ✅ Download the VADER lexicon (needed for sentiment analysis)
 nltk.download('vader_lexicon')
 
+import requests
+import json
+import streamlit as st
+
 # Slack Webhook URL
 SLACK_WEBHOOK_URL = 'https://hooks.slack.com/services/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'
 
 def send_slack_notification(message):
     payload = {'text': message}
     response = requests.post(SLACK_WEBHOOK_URL, data=json.dumps(payload), headers={'Content-Type': 'application/json'})
+    print(f"Response status code: {response.status_code}")
+    print(f"Response text: {response.text}")
     if response.status_code != 200:
         raise Exception(f"Request to Slack returned an error {response.status_code}, the response is:\n{response.text}")
+
+def analyze_competitor_data(product):
+    # Placeholder for actual data analysis logic
+    return f"Competitor data analysis for {product} is complete."
 
 def main():
     st.title("Competitor Insight Hub")
 
-    # Example: Collecting user input and displaying results
+    # Collecting user input
     product = st.sidebar.selectbox("Select a product", ["Product A", "Product B", "Product C"])
     st.write(f"Analyzing competitor data for {product}")
 
-    # Example: Calling the Slack notification function
+    # Perform competitor data analysis
+    result = analyze_competitor_data(product)
+    st.write(result)
+
+    # Send Slack notification
     send_slack_notification(f"Analysis started for {product}")
 
 if __name__ == "__main__":
     main()
+
 
 st.set_page_config(page_title="E-Commerce Competitor Strategy Dashboard", layout="wide")
 
