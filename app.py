@@ -227,18 +227,18 @@ if not API_KEY:
     data=json.dumps(data),
     headers=headers,
     )
-    try:
-        res = res.json()
-        if "choices" in res and res["choices"]:
-            return res["choices"][0]["message"]["content"]
-        else:
-            return "Error: Unable to generate recommendations. Please check the API key and response."
-    except requests.exceptions.RequestException as e:
-        return f"Error: Request to OpenAI API failed: {e}"
-    except json.JSONDecodeError:
-        return "Error: Failed to decode OpenAI API response. It may not be in JSON format."
-    except Exception as e:
-        return f"Error processing API response: {str(e)}"
+ try:
+    res = res.json()
+    if "choices" in res and res["choices"]:
+         return res["choices"][0]["message"]["content"]
+    else:
+         return "Error: Unable to generate recommendations. Please check the API key and response."
+ except requests.exceptions.RequestException as e:
+    return f"Error: Request to OpenAI API failed: {e}"
+ except json.JSONDecodeError:
+    return "Error: Failed to decode OpenAI API response. It may not be in JSON format."
+ except Exception as e:
+    return f"Error processing API response: {str(e)}"
 
 
 # Streamlit UI Configuration
