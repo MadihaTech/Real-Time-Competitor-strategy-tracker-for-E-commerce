@@ -348,16 +348,35 @@ competitor_data_with_predictions = forecast_discounts_arima(competitor_data_filt
 st.subheader("Competitor Current and Predicted Discounts")
 st.table(competitor_data_with_predictions.tail(10))
 
-# Generate and display strategic recommendations
-sentiment_output = sentiments if not product_reviews.empty else "No reviews available"
-recommendations = generate_strategy_recommendation(
-    selected_product,
-    competitor_data_with_predictions,
-    sentiment_output
-)
+# Debugging: Print values before passing to the function
+st.write("Debug: Selected Product", selected_product)
+st.write("Debug: Competitor Data", competitor_data_with_predictions)
+st.write("Debug: Sentiment Output", sentiment_output)
 
+# Handle empty values gracefully
+sentiment_output = sentiments if not product_reviews.empty else "No sentiment data available"
+
+# Generate Strategic Recommendations
+try:
+    recommendations = generate_strategy_recommendation(
+        selected_product,
+        competitor_data_with_predictions,
+        sentiment_output
+    )
+    st.write("Debug: Generated Recommendations", recommendations)  # Print output before display
+except Exception as e:
+    recommendations = f"Error generating recommendations: {str(e)}"
+    st.error(recommendations)
+
+# Display Recommendations
 st.subheader("Strategic Recommendations")
 st.write(recommendations)
 
-# Send recommendations to Slack
-send_to_slack(recommendations)
+# Send recommendations to Slack (Only if not empty)
+if recommendations and "Error" not in recommendations:
+    try:
+        send_to_slack(recommendations)
+        st.success("Recommendations sent to Slack successfully!")
+    except Exception as e:
+        st.error(f"Failed to send to Slack: {str(e)}")
+
