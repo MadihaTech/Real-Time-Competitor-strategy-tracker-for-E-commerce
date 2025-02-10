@@ -221,26 +221,58 @@ import pandas as pd
 import plotly.express as px
 import streamlit as st
 
-# Load your data (using the relative path to reviews.csv)
-# Ensure reviews.csv is in the same directory as app.py
-sentiment_df = pd.read_csv('reviews.csv')
+# Load customer reviews data
+reviews_path = 'reviews.csv'
+try:
+    sentiment_df = pd.read_csv(reviews_path)
+    st.write(f"Successfully loaded {reviews_path}")
+except FileNotFoundError:
+    st.write(f"Error: {reviews_path} file not found. Please check the file path.")
+    sentiment_df = pd.DataFrame()
 
-# Data Validation Checks
-st.write("First few rows of the dataframe:")
-st.write(sentiment_df.head())  # Display the first few rows of the dataframe
+# Load competitor data
+competitor_path = 'competitor_data.csv'
+try:
+    competitor_df = pd.read_csv(competitor_path)
+    st.write(f"Successfully loaded {competitor_path}")
+except FileNotFoundError:
+    st.write(f"Error: {competitor_path} file not found. Please check the file path.")
+    competitor_df = pd.DataFrame()
 
-st.write("DataFrame columns:")
-st.write(sentiment_df.columns)  # Display the columns of the dataframe
+# Data Validation Checks for customer reviews
+st.write("First few rows of the reviews dataframe:")
+st.write(sentiment_df.head())
 
-st.write("Missing values:")
-st.write(sentiment_df.isnull().sum())  # Display missing values in the dataframe
+st.write("Reviews DataFrame columns:")
+st.write(sentiment_df.columns)
 
-# Check if the dataframe is not empty and has the required columns
+st.write("Reviews Missing values:")
+st.write(sentiment_df.isnull().sum())
+
+# Data Validation Checks for competitor data
+st.write("First few rows of the competitor dataframe:")
+st.write(competitor_df.head())
+
+st.write("Competitor DataFrame columns:")
+st.write(competitor_df.columns)
+
+st.write("Competitor Missing values:")
+st.write(competitor_df.isnull().sum())
+
+# Check if the reviews dataframe is not empty and has the required columns
 if not sentiment_df.empty and 'label' in sentiment_df.columns and 'count' in sentiment_df.columns:
     fig = px.bar(sentiment_df, x="label", y="count", title="Sentiment Analysis Results")
     st.plotly_chart(fig)
 else:
-    st.write("DataFrame is empty or missing required columns. No reviews available for this product.")
+    st.write("Reviews DataFrame is empty or missing required columns. No reviews available for this product.")
+
+# Competitor Discounts Display
+if not competitor_df.empty and 'Date' in competitor_df.columns and 'Predicted_Discount' in competitor_df.columns:
+    fig2 = px.line(competitor_df, x="Date", y="Predicted_Discount", title="Competitor Current and Predicted Discounts")
+    st.plotly_chart(fig2)
+else:
+    st.write("Competitor DataFrame is empty or missing required columns.")
+
 
 
 
