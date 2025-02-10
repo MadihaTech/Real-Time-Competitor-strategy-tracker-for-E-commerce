@@ -222,15 +222,15 @@ import plotly.express as px
 import streamlit as st
 
 # Load your data (using the relative path to reviews.csv)
-# Replace 'reviews.csv' with the correct path to your CSV file
+# Ensure reviews.csv is in the same directory as app.py
 sentiment_df = pd.read_csv('reviews.csv')
 
 # Data Validation Checks
 st.write("First few rows of the dataframe:")
-st.write(sentiment_df.head())      # Display the first few rows of the dataframe
+st.write(sentiment_df.head())  # Display the first few rows of the dataframe
 
 st.write("DataFrame columns:")
-st.write(sentiment_df.columns)     # Display the columns of the dataframe
+st.write(sentiment_df.columns)  # Display the columns of the dataframe
 
 st.write("Missing values:")
 st.write(sentiment_df.isnull().sum())  # Display missing values in the dataframe
@@ -241,6 +241,7 @@ if not sentiment_df.empty and 'label' in sentiment_df.columns and 'count' in sen
     st.plotly_chart(fig)
 else:
     st.write("DataFrame is empty or missing required columns. No reviews available for this product.")
+
 
 
 # Streamlit code to render the app
