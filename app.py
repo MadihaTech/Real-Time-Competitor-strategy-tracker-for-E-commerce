@@ -217,10 +217,27 @@ if not product_reviews.empty:
 
     reviews = product_reviews["review_statements"].tolist()
     sentiments = analyze_sentiment(reviews)
+# Data Validation Checks (Insert at line 220)
+# Check the first few rows of the dataframe to verify the data
+print(sentiment_df.head())
+
+# Check the columns to verify the structure
+print(sentiment_df.columns)
+
+# Check for missing values in the dataframe
+print(sentiment_df.isnull().sum())
+import plotly.express as px
+
+# Updated Plotting Code
+if not sentiment_df.empty and 'label' in sentiment_df.columns and 'count' in sentiment_df.columns:
+    fig = px.bar(sentiment_df, x="label", y="count", title="Sentiment Analysis Results")
+    fig.show()
+else:
+    print("DataFrame is empty or missing required columns.")
 
     st.subheader("Customer Sentiment Analysis")
     sentiment_df = pd.DataFrame(sentiments)
-    fig = px.bar(sentiment_df, x="label", title="Sentiment Analysis Results")
+    fig = px.bar(sentiment_df, x="label", y="count", title="Sentiment Analysis Results")
     st.plotly_chart(fig)
 else:
     st.write("No reviews available for this product.")
