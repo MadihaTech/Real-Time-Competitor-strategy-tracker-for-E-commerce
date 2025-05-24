@@ -72,4 +72,3 @@ forecast = result.forecast(steps=10)
 * Statsmodels ARIMA Documentation: [https://www.statsmodels.org/stable/index.html](https://www.statsmodels.org/stable/index.html)
 * Streamlit Cheat Sheet: [https://docs.streamlit.io/library/cheatsheet](https://docs.streamlit.io/library/cheatsheet)
 * Hugging Face Transformers Guide: [https://huggingface.co/docs/transformers/index](https://huggingface.co/docs/transformers/index)
-*
