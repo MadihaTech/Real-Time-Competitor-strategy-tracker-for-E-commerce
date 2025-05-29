@@ -12,8 +12,8 @@ This project focuses on creating a real-time competitive intelligence tool for e
 
 1.   Competitor Data Aggregation: Track pricing and discount strategies.
 2.   Sentiment Analysis: Analyze customer reviews for actionable insights.
-3.   Predictive Modeling: Forecast competitor
-4. Slack Integration: Get real-time notifications on competitor activity.  
+3.   Predictive Modeling: Forecast competitor discounts.
+4.   Slack Integration: Get real-time notifications on competitor activity.  
 
 # **Setup Instructions**
 
@@ -28,7 +28,7 @@ cd <repository-directory>
 
 Install the required Python libraries using pip:
 
-pip install .r requirements.txt
+pip install -r requirements.txt
 
 **3.Configure API Keys**
 
@@ -48,7 +48,7 @@ This project requires the following keys:
 2.   **Slack Webhook Integration:**
    
 *   Go to the Slack API.
-*   Create a new app and enable incoming webhooks.
+*   Create a new app and enable Incoming Webhooks.
 *   Add a webhook to a channel and copy the generated URL.
 *   Add this to URL to the app.py file.
 
@@ -74,7 +74,8 @@ streamlit run app.py
 
 # **License**
 
-This project is licensed by MIT License.
+This project is licensed under the MIT License.
+
 ## Streamlit App
 
 [![View App](https://img.shields.io/badge/View%20App-Streamlit-brightgreen)](https://real-time-competitor-strategy-tracker-for-e-commerce-5skseqmkl.streamlit.app/)
